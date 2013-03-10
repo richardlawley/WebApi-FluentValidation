@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "FluentValidation Web API Test";
+}
+
+<div id="body">
+    <section class="content-wrapper main-content clear-fix">
+
+        <form id="frm">
+            Even numbers are valid
+
+    <p>
+        Value:
+        <input id="Value" value="3" />
+    </p>
+
+            <p>
+                Result:
+        <span id="result"></span>
+            </p>
+
+            <button>Submit</button>
+
+        </form>
+    </section>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#frm").submit(function (frm) {
+
+            $("#result").text("");
+
+            var model = {
+                Value: $("#Value").val()
+            };
+
+            var jqxhr = $.post("api/values", model)
+                .done(function (result) { $("#result").text(result); })
+                .fail(function (err) { $("#result").text(err.statusText); });
+
+            return false;
+        });
+    });
+</script>

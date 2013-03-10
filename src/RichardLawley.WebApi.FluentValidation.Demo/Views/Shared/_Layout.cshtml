@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    <header>
+        <div class="content-wrapper">
+            <div class="float-left">
+                <p class="site-title">
+                    <a href="~/">Ordered Filters Demo</a></p>
+            </div>
+        </div>
+    </header>
+    @Scripts.Render("~/bundles/jquery")
+    @RenderBody()
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
