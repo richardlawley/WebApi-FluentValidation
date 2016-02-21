@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http.Dependencies;
 using FluentValidation;
 
@@ -14,10 +12,10 @@ namespace RichardLawley.WebApi.FluentValidation
     /// </summary>
     public class FluentValidatorProvider : IFluentValidatorProvider
     {
-        private HashSet<Type> _typesWithValidators = new HashSet<Type>();
-        private HashSet<Type> _typesWithNoValidators = new HashSet<Type>();
-        private object _syncRoot = new object();
-        private IScopedValidatorFactory _factory;
+        private readonly HashSet<Type> _typesWithValidators = new HashSet<Type>();
+        private readonly HashSet<Type> _typesWithNoValidators = new HashSet<Type>();
+        private readonly object _syncRoot = new object();
+        private readonly IScopedValidatorFactory _factory;
 
         /// <summary>
         /// Constructor

@@ -68,6 +68,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\assets\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="FluentValidationActionFilter.cs" />
     <Compile Include="FluentValidatorProvider.cs" />
     <Compile Include="IFluentValidatorProvider.cs" />

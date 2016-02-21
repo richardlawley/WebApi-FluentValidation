@@ -45,7 +45,7 @@ namespace RichardLawley.WebApi.FluentValidation
             {
                 // Only perform the FluentValidation if we've not already failed validation earlier on
                 IDependencyScope scope = actionContext.Request.GetDependencyScope();
-                IFluentValidatorProvider mvp = scope.GetService(typeof(IFluentValidatorProvider)) as IFluentValidatorProvider;
+                var mvp = scope.GetService(typeof(IFluentValidatorProvider)) as IFluentValidatorProvider;
 
                 if (mvp != null)
                 {
@@ -60,7 +60,7 @@ namespace RichardLawley.WebApi.FluentValidation
                                     argument.Value.GetType()
                                 );
 
-                            InternalValidationContext validationContext = new InternalValidationContext()
+                            var validationContext = new InternalValidationContext
                             {
                                 MetadataProvider = metadataProvider,
                                 ActionContext = actionContext,
@@ -96,7 +96,7 @@ namespace RichardLawley.WebApi.FluentValidation
             foreach (IValidator validator in validators)
             {
                 IValidatorSelector selector = new DefaultValidatorSelector();
-                ValidationContext context = new ValidationContext(metadata.Model, new PropertyChain(), selector);
+                var context = new ValidationContext(metadata.Model, new PropertyChain(), selector);
 
                 ValidationResult result = validator.Validate(context);
 
@@ -125,7 +125,7 @@ namespace RichardLawley.WebApi.FluentValidation
             Type elementType = GetElementType(model.GetType());
             ModelMetadata elementMetadata = validationContext.MetadataProvider.GetMetadataForType(null, elementType);
 
-            ElementScope elementScope = new ElementScope() { Index = 0 };
+            var elementScope = new ElementScope { Index = 0 };
             validationContext.KeyBuilders.Push(elementScope);
             foreach (object element in model)
             {
@@ -159,7 +159,7 @@ namespace RichardLawley.WebApi.FluentValidation
             validationContext.Visited.Add(model);
 
             // Validate the children first - depth-first traversal
-            IEnumerable enumerableModel = model as IEnumerable;
+            var enumerableModel = model as IEnumerable;
             if (enumerableModel == null)
             {
                 isValid = ValidateProperties(metadata, validationContext);
@@ -183,7 +183,7 @@ namespace RichardLawley.WebApi.FluentValidation
         private bool ValidateProperties(ModelMetadata metadata, InternalValidationContext validationContext)
         {
             bool isValid = true;
-            PropertyScope propertyScope = new PropertyScope();
+            var propertyScope = new PropertyScope();
             validationContext.KeyBuilders.Push(propertyScope);
             foreach (ModelMetadata childMetadata in validationContext.MetadataProvider.GetMetadataForProperties(
                 metadata.Model, GetRealModelType(metadata)))
@@ -197,6 +197,7 @@ namespace RichardLawley.WebApi.FluentValidation
             validationContext.KeyBuilders.Pop();
             return isValid;
         }
+
         #endregion Copied from DefaultBodyModelValidator in Web API Source
 
         #region Inaccessible Helper Methods from the Web API source needed by the other code here
@@ -206,15 +207,9 @@ namespace RichardLawley.WebApi.FluentValidation
             string AppendTo(string prefix);
         }
 
-        private static string CreateIndexModelName(string parentName, int index)
-        {
-            return CreateIndexModelName(parentName, index.ToString(CultureInfo.InvariantCulture));
-        }
+        private static string CreateIndexModelName(string parentName, int index) => CreateIndexModelName(parentName, index.ToString(CultureInfo.InvariantCulture));
 
-        private static string CreateIndexModelName(string parentName, string index)
-        {
-            return (parentName.Length == 0) ? "[" + index + "]" : parentName + "[" + index + "]";
-        }
+        private static string CreateIndexModelName(string parentName, string index) => (parentName.Length == 0) ? $"[{index}]" : $"{parentName}[{index}]";
 
         private static string CreatePropertyModelName(string prefix, string propertyName)
         {
@@ -250,6 +245,7 @@ namespace RichardLawley.WebApi.FluentValidation
 
             return typeof(object);
         }
+
         private Type GetRealModelType(ModelMetadata metadata)
         {
             Type realModelType = metadata.ModelType;
@@ -267,21 +263,16 @@ namespace RichardLawley.WebApi.FluentValidation
         {
             public int Index { get; set; }
 
-            public string AppendTo(string prefix)
-            {
-                return CreateIndexModelName(prefix, Index);
-            }
+            public string AppendTo(string prefix) => CreateIndexModelName(prefix, Index);
         }
 
         private class PropertyScope : IKeyBuilder
         {
             public string PropertyName { get; set; }
 
-            public string AppendTo(string prefix)
-            {
-                return CreatePropertyModelName(prefix, PropertyName);
-            }
+            public string AppendTo(string prefix) => CreatePropertyModelName(prefix, PropertyName);
         }
+
         #endregion Inaccessible Helper Methods from the Web API source needed by the other code here
 
         private class InternalValidationContext

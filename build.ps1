@@ -1,50 +1,81 @@
-Properties {
-	$base_dir = resolve-path .
-	$packages_dir = "$base_dir\packages"
-	$build_artifacts_dir = "$base_dir\build"
-	$solution_name = "$base_dir\RichardLawley.WebApi.FluentValidation.sln"
-	$nunit_runner = "$packages_dir\NUnit.Runners.2.6.2\tools"
-	$nunit_build_destination = "$build_artifacts_dir\tools\nunit"
-	$nunitConsole = "$nunit_build_destination\nunit-console.exe"
-	$nuget_exe = "$base_dir\.nuget\Nuget.exe"
+param(
+    [String] $majorMinor = "1.0.0", # 1.4
+    [String] $patch = "0",          # $env:APPVEYOR_BUILD_VERSION
+    [String] $branch = "master",    # $env:APPVEYOR_REPO_BRANCH
+    [String] $customLogger = "",    # C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll
+    [Switch] $notouch
+)
+
+function Set-AssemblyVersions($informational, $file, $assembly)
+{
+    (Get-Content assets/CommonAssemblyInfo.cs) |
+        ForEach-Object { $_ -replace "AssemblyVersion\(""(.*?)""\)", "AssemblyVersion(""$assembly"")" } |
+        ForEach-Object { $_ -replace "AssemblyInformationalVersion\(""(.*?)""\)", "AssemblyInformationalVersion(""$informational"")" } |
+        ForEach-Object { $_ -replace "AssemblyFileVersion\(""(.*?)""\)", "AssemblyFileVersion(""$file"")" } |
+        Set-Content assets/CommonAssemblyInfo.cs
 }
 
-Task Default -Depends BuildMain, PrepareForTest, RunUnitTests, NuGetBuild
-
-Task BuildMain -Depends Clean, Build
-
-Task Clean {
-	Exec { msbuild $solution_name /v:Quiet /t:Clean /p:Configuration=Release }
+function Install-NuGetPackages()
+{
+    nuget restore RichardLawley.WebApi.FluentValidation.sln
 }
 
-Task Build -depends Clean {
-	Exec { msbuild $solution_name /v:Quiet /t:Build /p:Configuration=Release /p:OutDir=$build_artifacts_dir\ } 
+function Invoke-MSBuild($solution, $customLogger)
+{
+    if ($customLogger)
+    {
+        msbuild "$solution" /verbosity:minimal /p:Configuration=Release /logger:"$customLogger"
+    }
+    else
+    {
+        msbuild "$solution" /verbosity:minimal /p:Configuration=Release
+    }
 }
 
-Task NuGetBuild {
-	& $nuget_exe pack "$base_dir/src/RichardLawley.WebApi.FluentValidation/RichardLawley.WebApi.FluentValidation.csproj" -Build -OutputDirectory $build_artifacts_dir -Verbose -Properties Configuration=Release
+function Invoke-NuGetPackProj($csproj)
+{
+    nuget pack -Prop Configuration=Release -Symbols $csproj
 }
 
-Task PrepareForTest {
-	$tools_folder = "$build_artifacts_dir\tools"
-	if (Test-Path $tools_folder) {
-		Remove-Item $tools_folder -Force -Recurse
-	}
-	Copy-Item "$nunit_runner\*" $nunit_build_destination
-	Copy-Item "$nunit_runner\lib\*" "$nunit_build_destination\lib"
+function Invoke-NuGetPackSpec($nuspec, $version)
+{
+    nuget pack $nuspec -Version $version -OutputDirectory ..\..\
 }
 
-Task RunUnitTests -depends PrepareForTest, Build {
-	$test_result = "$build_artifacts_dir\UnitTestsResult.xml"
-	
-	& "$nunitConsole" "$build_artifacts_dir\RichardLawley.WebApi.FluentValidation.Tests.dll" /nologo /nodots /framework:net-4.0 "/xml=$test_result"
-	
-	if ($lastexitcode -gt 0)
-	{
-		throw "{0} unit tests failed. See {1} for a simple summary." -f $lastexitcode, $test_result
-	}
-	if ($lastexitcode -lt 0)
-	{
-		throw "unit test run was terminated by a fatal error. See {0} for a simple summary." -f $test_result
-	}
+function Invoke-NuGetPack($version)
+{
+    Invoke-NuGetPackProj src\RichardLawley.WebApi.FluentValidation\RichardLawley.WebApi.FluentValidation.csproj
+    pushd .\src\RichardLawley.WebApi.FluentValidation
+    Invoke-NuGetPackSpec "RichardLawley.WebApi.FluentValidation.nuspec" $version
+    popd
 }
+
+function Invoke-Build($majorMinor, $patch, $branch, $customLogger, $notouch)
+{
+    $target = "$majorMinor"
+    $file = "$target.$patch"
+    $package = $target
+    if ($branch -ne "master")
+    {
+        $package = "$target-pre-$patch"
+    }
+
+    Write-Output "Building RichardLawley.WebApi.FluentValidation $package"
+
+    if (-not $notouch)
+    {
+        $assembly = "$majorMinor.0"
+
+        Write-Output "Assembly version will be set to $assembly"
+        Set-AssemblyVersions $package $file $assembly
+    }
+
+    Install-NuGetPackages
+    
+    Invoke-MSBuild "RichardLawley.WebApi.FluentValidation.sln" $customLogger
+
+    Invoke-NuGetPack $package
+}
+
+$ErrorActionPreference = "Stop"
+Invoke-Build $majorMinor $patch $branch $customLogger $notouch

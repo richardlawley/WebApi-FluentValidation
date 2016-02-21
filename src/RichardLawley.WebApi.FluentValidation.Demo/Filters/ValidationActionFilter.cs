@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.ModelBinding;
-using Newtonsoft.Json;
 using RichardLawley.WebApi.OrderedFilters;
 
 namespace RichardLawley.WebApi.FluentValidation.Demo.Filters
@@ -20,7 +19,7 @@ namespace RichardLawley.WebApi.FluentValidation.Demo.Filters
 
             if (modelState.IsValid) return;
 
-            List<ValidationFailure> errors = new List<ValidationFailure>();
+            var errors = new List<ValidationFailure>();
             foreach (KeyValuePair<string, ModelState> item in actionContext.ModelState)
             {
                 errors.AddRange(item.Value.Errors.Select(e => new ValidationFailure

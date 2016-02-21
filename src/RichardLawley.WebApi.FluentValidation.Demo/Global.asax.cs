@@ -19,7 +19,7 @@ namespace RichardLawley.WebApi.FluentValidation.Demo
         protected void Application_Start()
         {
             // Initialise Autofac
-            ContainerBuilder builder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
             builder.RegisterApiControllers(typeof(MvcApplication).Assembly);
 
             // Validator and the service on which it depends

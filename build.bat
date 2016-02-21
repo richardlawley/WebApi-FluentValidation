@@ -1,2 +1,2 @@
 echo off
-.\tools\psake\psake.bat %*
+powershell .\build.ps1 %*
