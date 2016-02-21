@@ -9,10 +9,10 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Dependencies;
 using System.Web.Http.Metadata;
 using System.Web.Http.ModelBinding;
+using System.Web.Http.ValueProviders;
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
-using Newtonsoft.Json;
 using RichardLawley.WebApi.OrderedFilters;
 
 namespace RichardLawley.WebApi.FluentValidation
@@ -30,7 +30,8 @@ namespace RichardLawley.WebApi.FluentValidation
         /// </summary>
         /// <param name="order">Order to run this filter</param>
         public FluentValidationActionFilter(int order = 1)
-            : base(order) { }
+            : base(order)
+        { }
 
         /// <summary>
         /// Pick out validation errors and turn these into a suitable exception structure
@@ -88,7 +89,6 @@ namespace RichardLawley.WebApi.FluentValidation
         private static bool ShallowValidate(ModelMetadata metadata, InternalValidationContext validationContext, object container)
         {
             bool isValid = true;
-            string key = null;
 
             // Use the DependencyResolver to find any validators appropriate for this type
             IEnumerable<IValidator> validators = validationContext.Provider.GetValidators(metadata.ModelType, validationContext.Scope);
@@ -99,24 +99,18 @@ namespace RichardLawley.WebApi.FluentValidation
                 ValidationContext context = new ValidationContext(metadata.Model, new PropertyChain(), selector);
 
                 ValidationResult result = validator.Validate(context);
-                foreach (var error in result.Errors)
-                {
-                    if (key == null)
-                    {
-                        key = validationContext.RootPrefix;
-                        foreach (IKeyBuilder keyBuilder in validationContext.KeyBuilders.Reverse())
-                        {
-                            key = keyBuilder.AppendTo(key);
-                        }
 
-                        // Avoid adding model errors if the model state already contains model errors for that key
-                        // We can't perform this check earlier because we compute the key string only when we detect an error
-                        if (!validationContext.ModelState.IsValidField(key))
+                foreach (ValidationFailure error in result.Errors)
+                {
+                    if (!validationContext.ModelState.ContainsKey(error.PropertyName))
+                    {
+                        validationContext.ModelState.Add(error.PropertyName, new ModelState
                         {
-                            return false;
-                        }
+                            Value = new ValueProviderResult(error.AttemptedValue, error.AttemptedValue.ToString(), CultureInfo.CurrentCulture)
+                        });
                     }
-                    validationContext.ModelState.AddModelError(key, JsonConvert.SerializeObject(error));
+
+                    validationContext.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                     isValid = false;
                 }
             }
