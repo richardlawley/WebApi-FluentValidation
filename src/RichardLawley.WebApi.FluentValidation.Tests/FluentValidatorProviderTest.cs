@@ -10,7 +10,6 @@ using Shouldly;
 namespace RichardLawley.WebApi.FluentValidation.Tests
 {
     [TestFixture]
-    [ExcludeFromCodeCoverage]
     public class FluentValidatorProviderTest
     {
         private IDependencyScope _scope;
