@@ -48,7 +48,7 @@ namespace RichardLawley.WebApi.FluentValidation.Tests
             var validators = _sut.GetValidators(typeof(TestModel), _scope);
 
             validators.Count().ShouldBe(1);
-            validators.Single().ShouldBeTypeOf<TestModelValidator>();
+            validators.Single().ShouldBeOfType<TestModelValidator>();
         }
 
         [Test]
