@@ -1,8 +1,9 @@
-﻿using System.Web.Mvc;
+﻿using System.Web;
+using System.Web.Mvc;
 
 namespace RichardLawley.WebApi.FluentValidation.Demo
 {
-    public static class FilterConfig
+    public class FilterConfig
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
