@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RichardLawley.WebApi.FluentValidation", "src\RichardLawley.WebApi.FluentValidation\RichardLawley.WebApi.FluentValidation.csproj", "{EB58D9D3-040D-4D53-8928-4E5063B0E570}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RichardLawley.WebApi.FluentValidation", "src\RichardLawley.WebApi.FluentValidation\RichardLawley.WebApi.FluentValidation.csproj", "{EB58D9D3-040D-4D53-8928-4E5063B0E570}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RichardLawley.WebApi.FluentValidation.Tests", "src\RichardLawley.WebApi.FluentValidation.Tests\RichardLawley.WebApi.FluentValidation.Tests.csproj", "{F326FA2E-C2E5-4AA4-873D-C87E4F17BF9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RichardLawley.WebApi.FluentValidation.Tests", "src\RichardLawley.WebApi.FluentValidation.Tests\RichardLawley.WebApi.FluentValidation.Tests.csproj", "{F326FA2E-C2E5-4AA4-873D-C87E4F17BF9F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{32DD609D-E761-4553-AF83-6E93DFEA7725}"
 	ProjectSection(SolutionItems) = preProject
 		build.bat = build.bat
-		build.ps1 = build.ps1
-		assets\CommonAssemblyInfo.cs = assets\CommonAssemblyInfo.cs
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RichardLawley.WebApi.FluentValidation.Demo", "src\RichardLawley.WebApi.FluentValidation.Demo\RichardLawley.WebApi.FluentValidation.Demo.csproj", "{C03A291E-391A-4D07-9B05-E8C0A33317F9}"

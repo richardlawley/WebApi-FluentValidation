@@ -1,6 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
+    <Version>7.0.0</Version>
+    <Authors>Richard Lawley</Authors>
+    <Company>Richard Lawley</Company>
+    <Product>FluentValidation integration for WebApi</Product>
+    <Description>FluentValidation integration for WebApi</Description>
+    <Copyright>Richard Lawley</Copyright>
+    <PackageProjectUrl>https://github.com/richardlawley/WebApi-FluentValidation</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/richardlawley/WebApi-FluentValidation</RepositoryUrl>
+    <PackageReleaseNotes>7.0.0
+------
+* Updated build for FluentValidation 7</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="7.0.0" />

@@ -1,2 +1,2 @@
 echo off
-powershell .\build.ps1 %*
+dotnet pack src/RichardLawley.WebApi.FluentValidation -c Release --include-symbols
