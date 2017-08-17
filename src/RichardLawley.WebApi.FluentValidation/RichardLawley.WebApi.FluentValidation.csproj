@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <Version>7.0.0</Version>
+    <Version>7.0.0.1</Version>
     <Authors>Richard Lawley</Authors>
     <Company>Richard Lawley</Company>
     <Product>FluentValidation integration for WebApi</Product>
@@ -15,6 +15,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="7.0.0" />
-    <PackageReference Include="RichardLawley.WebApi.OrderedFilters" Version="0.5.1" />
+    <PackageReference Include="RichardLawley.WebApi.OrderedFilters" Version="1.0.0" />
   </ItemGroup>
 </Project>
