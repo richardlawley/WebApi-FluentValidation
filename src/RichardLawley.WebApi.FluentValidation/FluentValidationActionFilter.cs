@@ -99,14 +99,13 @@ namespace RichardLawley.WebApi.FluentValidation
                 var context = new ValidationContext(metadata.Model, new PropertyChain(), selector);
 
                 ValidationResult result = validator.Validate(context);
-
                 foreach (ValidationFailure error in result.Errors)
                 {
                     if (!validationContext.ModelState.ContainsKey(error.PropertyName))
                     {
                         validationContext.ModelState.Add(error.PropertyName, new ModelState
                         {
-                            Value = new ValueProviderResult(error.AttemptedValue, error.AttemptedValue.ToString(), CultureInfo.CurrentCulture)
+                            Value = new ValueProviderResult(error.AttemptedValue, error.AttemptedValue?.ToString(), CultureInfo.CurrentCulture)
                         });
                     }
 

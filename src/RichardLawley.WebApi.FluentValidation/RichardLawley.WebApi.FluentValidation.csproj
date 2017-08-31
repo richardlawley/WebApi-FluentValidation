@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <Version>7.0.0.1</Version>
+    <Version>7.0.0.5</Version>
     <Authors>Richard Lawley</Authors>
     <Company>Richard Lawley</Company>
     <Product>FluentValidation integration for WebApi</Product>
